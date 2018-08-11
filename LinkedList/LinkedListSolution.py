@@ -53,6 +53,7 @@ class LinkedList(object):
                 previous.next = current.next
             else:
                 self.head = current.next
+
 # Test cases
 # Set up some Elements
 e1 = Element(1)
