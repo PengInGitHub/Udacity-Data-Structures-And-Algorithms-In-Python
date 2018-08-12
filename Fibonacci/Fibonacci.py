@@ -19,6 +19,22 @@ fib_seq[7] = 13
 fib_seq[8] = 21
 fib_seq[9] = 34
 """
+def get_fib_loop(position):
+    """if position == 0:
+        return 0
+    elif position == 1:
+        return 1"""
+    if position == 0 or position == 1:
+        return position    
+    else:
+        first, second, counter = 0, 1, 3
+        next = first + second
+        while (counter <= position):
+            first, second = second, next
+            next = first + second
+            counter += 1
+        return next
+
 
 def get_fib(position):
     if position == 0:
@@ -34,6 +50,9 @@ def get_fib_solution(position):
     else:
         return get_fib_solution(position-1) + get_fib_solution(position-2)
 # Test cases
-print get_fib_solution(9)
-print get_fib_solution(11)
-print get_fib_solution(0)
+print get_fib_loop(9)#34
+print get_fib_loop(11)#89
+print get_fib_loop(0)#0
+print get_fib_loop(1)#1
+print get_fib_loop(2)#1
+print get_fib_loop(3)#2
