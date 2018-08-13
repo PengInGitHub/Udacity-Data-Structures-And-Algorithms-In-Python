@@ -6,42 +6,32 @@ class HashTable(object):
     def __init__(self):
         self.table = [None]*10000
 
-    def store_dict(self, string):
-        """Input a string that's stored in 
-        the table."""
-        self.table.append({self.calculate_hash_value(string):string})
-
     def store(self, string):
         """Input a string that's stored in 
         the table."""
-        hashValue = self.calculate_hash_value(string)
-        if hashValue != -1:
-            if  self.table[hashValue]  != None:
-                self.table[hashValue].append(string)
+        hv = self.calculate_hash_value(string)
+        if hv != -1:
+            if self.table[hv] != None:
+                #append
+                self.table[hv].append(string)
             else:
-                self.table[hashValue] = [string]
-    def lookup(self, string):
-        hashValue = self.calculate_hash_value(string)
-        if hashValue != -1:
-            if  self.table[hashValue]  != None:
-                if string in self.table[hashValue]:
-                    return hashValue
-        return -1
+                #add new list
+                self.table[hv] = [string]
         
-    def lookup_dict(self, string):
+        
+    def lookup(self, string):
         """Return the hash value if the
         string is already in the table.
         Return -1 otherwise."""
-        for d in self.table:
-          if d:
-            for k in d.keys():
-              if d[k] == string:
-                return k
+        hv = self.calculate_hash_value(string)
+        if hv != -1:
+            if self.table[hv] != None: # already exists
+                return hv
+
         return -1
 
+
     def calculate_hash_value(self, string):
-        """Helper function to calulate a
-        hash value from a string."""
         if len(string) >= 2:
             return ord(string[0])*100 + ord(string[1])
         return -1
