@@ -101,13 +101,12 @@ class Tree:
 
 #instantiate
 bst = Tree()
-bst.insert(10)
 bst.insert(7)
-bst.insert(17)
+bst.insert(6)
 bst.insert(20)
-bst.insert(21)
-bst.insert(5)
-bst.insert(30)
+bst.insert(4)
+bst.insert(8)
+bst.insert(19)
 
 print bst.find(20)
 print bst.find(19)
