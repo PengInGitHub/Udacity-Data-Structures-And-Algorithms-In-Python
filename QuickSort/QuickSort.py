@@ -20,5 +20,21 @@ def quicksort(array):
     return array     
         
 
-test = [21, 4, 1, 3, 9, 20, 25, 6, 21, 14]
-print quicksort(test)
+def quickSortNew(aList):
+    if len(aList) > 1:
+        less, equal, greater = [], [], []
+        pivot = aList[-1]
+        for i in aList:
+            if i < pivot:
+                less.append(i)
+            elif i == pivot:
+                equal.append(i)
+            else:
+                greater.append(i)
+        return quickSortNew(less) + equal + quickSortNew(greater)
+
+    return aList
+
+test = [21, -4, -1, -1, 0, 900, 25, 6, 21, 14]
+sortedList= quickSortNew(test)
+print sortedList
