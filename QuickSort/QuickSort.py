@@ -35,6 +35,25 @@ def quickSortNew(aList):
 
     return aList
 
+
+
+def quickSortUpdate(aList):
+    if len(aList)<2:
+        return aList
+    
+    less, equal, greater = [], [], []
+    pivot = aList[-1]
+
+    for x in aList:
+        if x < pivot:
+            less.append(x)
+        elif x == pivot:
+            equal.append(x)
+        else:
+            greater.append(x)
+    
+    return quickSortUpdate(less) + equal + quickSortUpdate(greater)
+
 test = [21, -4, -1, -1, 0, 900, 25, 6, 21, 14]
-sortedList= quickSortNew(test)
-print sortedList
+sortedList= quickSortUpdate(test)
+print sortedList    
