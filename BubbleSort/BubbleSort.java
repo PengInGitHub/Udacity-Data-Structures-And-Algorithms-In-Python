@@ -5,9 +5,9 @@ public class BubbleSort{
         int[] aList2 = {1};
         int[] aList3 = {-11};
 
-        bubble_sort(aList);
-        for (int ele = 0; ele<aList3.length; ele++){
-            System.out.print(aList3[ele] + ",");
+        int[] sorted = bubbleSortUpdate(aList);
+        for (int ele = 0; ele<sorted.length; ele++){
+            System.out.print(sorted[ele] + ",");
         }
     }
 
@@ -29,5 +29,25 @@ public class BubbleSort{
             }
         }
 
+    }
+
+    public static int[] bubbleSortUpdate(int[] aList){
+        int length = aList.length;
+        if (length<2){
+            return aList;
+        }
+        //outter loop
+        for(int i=length-1;i>0;i--){
+            //inner loop
+            for (int j=0;j<i;j++){
+                if (aList[j]>aList[j+1]){
+                    //swap
+                    int tmp = aList[j];
+                    aList[j] = aList[j+1];
+                    aList[j+1] = aList[j];
+                }
+            }
+        }
+        return aList;
     }
 }

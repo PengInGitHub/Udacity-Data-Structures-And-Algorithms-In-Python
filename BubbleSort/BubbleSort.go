@@ -17,7 +17,7 @@ func bubbleSortTest(aList []int) {
 
 func main() {
 	aList := []int{103, -54, 26, 93, 0, -17, 77, 1, 17, 31, 44, 55, 20}
-	bubbleSortTest(aList)
+	bubbleSortUpdate(aList)
 	fmt.Println(aList)
 }
 
@@ -30,4 +30,22 @@ func bubbleSort(aSlice []int) {
 			}
 		}
 	}
+}
+
+func bubbleSortUpdate(aList []int) []int {
+	length := len(aList)
+	if length < 2 {
+		return aList
+	}
+	//outter loop i = length-1, ..., 2, 1
+	for i := length - 1; i > 0; i-- {
+		//inner loop j = 0, 1, ... i
+		for j := 0; j < i; j++ {
+			if aList[j] > aList[j+1] {
+				//swap
+				aList[j], aList[j+1] = aList[j+1], aList[j]
+			}
+		}
+	}
+	return aList
 }

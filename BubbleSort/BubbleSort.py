@@ -45,30 +45,30 @@ def bubbleSortTest(aList):
         aList[j] = aList[j+1]
         aList[j+1] = tmp
 
-aList = [54,26,93,17,77,31,44,55,20]
-aList1 = [54,26,93,-17,77,0,44,55,20]
-aList2 = [54]
-aList3 = [0]
-aList4 = [-1]
 
-bubbleSort(aList)
-bubbleSort(aList1)
-bubbleSort(aList2)
-bubbleSort(aList3)
-bubbleSort(aList4)
+def bulleSortUpdate(aList):
+    length = len(aList)
+    
+    if length < 2:
+        return aList
+    
+    start = length-1
+    stop = 0
+    step = -1
 
-print aList
-print aList1
-print aList2
-print aList3
-print aList4
+    #outter loop, i would be ... 3, 2, 1
+    for i in range(start, stop, step):
+        #inner loop from 0 to the value of i
+        for j in range(i):
+            if aList[j] > aList[j+1]:
+                #swap
+                tmp = aList[j]
+                aList[j] = aList[j+1]
+                aList[j+1] = tmp
+    return aList
+aList = [54,-17,26,93,-17,77,0,0,44,55,20]
 
-aList = [103,54,26,93,0,17,77,1,17,31,44,55,20]
-aList0 = [0]
-aList1 = [1]
-bubbleSort(aList0)
-bubbleSort(aList1)
-bubbleSort(aList)
-print aList
-print aList0
-print aList1
+updated = bulleSortUpdate(aList)
+
+print updated
+
