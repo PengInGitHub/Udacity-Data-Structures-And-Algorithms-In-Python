@@ -52,7 +52,7 @@ def bulleSortUpdate(aList):
     if length < 2:
         return aList
     
-    start = length-1
+    start = length-1#mistake made, should be length-1 instead of length
     stop = 0
     step = -1
 

@@ -70,7 +70,7 @@ func (n *Node) findMax(parent *Node) (*Node, *Node) {
 	return n.Right.findMax(n)
 }
 
-//replaceNode changes the parent's pointer to n by a pointer to replacement node
+//replaceNode changes the node n's parent's pointer by a pointer to the replacement node
 func (n *Node) replaceNode(parent, replacement *Node) error {
 	if n == nil {
 		return errors.New("replaceNode cannot work on a nil node")
@@ -106,16 +106,20 @@ func (n *Node) Delete(s string, parent *Node) error {
 			n.replaceNode(parent, nil)
 			return nil
 		}
+		//n has only right child
 		if n.Left == nil {
 			fmt.Println("n.Left == nil called, n.Value:", n.Value)
+			//replaceNode(parent, placement)
 			n.replaceNode(parent, n.Right)
 			return nil
 		}
+		//n has only left child
 		if n.Right == nil {
 			fmt.Println("n.Right == nil called, n.Value:", n.Value)
 			n.replaceNode(parent, n.Left)
 			return nil
 		}
+		//n has both left and right child
 		replacement, replaceParent := n.Left.findMax(n)
 
 		n.Value = replacement.Value
@@ -191,11 +195,179 @@ func (t *Tree) TraversePost(n *Node, f func(*Node)) {
 	t.TraversePost(n.Right, f)
 	f(n)
 }
+
+type NodeReview struct {
+	Value string
+	Data  string
+	Left  *NodeReview
+	Right *NodeReview
+}
+
+type TreeReview struct {
+	Root *NodeReview
+}
+
+func (n *NodeReview) Insert(value, data string) error {
+	if n == nil {
+		return errors.New("Cannot insert value to a nil node")
+	}
+	switch {
+	case value < n.Value:
+		if n.Left == nil {
+			n.Left = &NodeReview{Value: value, Data: data}
+			return nil
+		}
+		return n.Left.Insert(value, data)
+	case value > n.Value:
+		if n.Right == nil {
+			n.Right = &NodeReview{Value: value, Data: data}
+			return nil
+		}
+		return n.Right.Insert(value, data)
+	case value == n.Value:
+		return nil
+	}
+	return nil
+}
+
+func (n *NodeReview) Find(v string) (string, bool) {
+	if n == nil {
+		return "", false
+	}
+	switch {
+	case v == n.Value:
+		return n.Data, true
+	case v > n.Value:
+		return n.Right.Find(v)
+	//made mistake here: 'case v < n.Value' this requires return outside switch{}
+	default:
+		return n.Left.Find(v)
+	}
+}
+
+func (n *NodeReview) findMax(parent *NodeReview) (*NodeReview, *NodeReview) {
+	if n == nil {
+		return nil, parent
+	}
+	//get max
+	if n.Right == nil {
+		return n, parent
+	}
+
+	return n.Right.findMax(n)
+}
+
+func (n *NodeReview) replaceNode(parent, placement *NodeReview) error {
+	if n == nil {
+		return errors.New("replaceNode doesnot work on empty node")
+	}
+	if n == parent.Left {
+		parent.Left = placement
+		return nil
+	}
+	parent.Right = placement
+	return nil
+}
+
+func (n *NodeReview) Delete(v string, parent *NodeReview) error {
+	if n == nil {
+		return errors.New("cannot delete empty node")
+	}
+
+	switch {
+	case v < n.Value:
+		return n.Left.Delete(v, n)
+	case v > n.Value:
+		return n.Right.Delete(v, n)
+	default:
+		//if n is a leaf
+		if n.Left == nil && n.Right == nil {
+			n.replaceNode(parent, nil)
+			return nil
+		}
+		//if n has only left child
+		if n.Right == nil {
+			n.replaceNode(parent, n.Left)
+			return nil
+		}
+		//if n has only right child
+		if n.Left == nil {
+			n.replaceNode(parent, n.Right)
+			return nil
+		}
+		//if n has both left and right child
+		replacement, replacementParent := n.Left.findMax(n)
+		n.Value = replacement.Value
+		n.Data = replacement.Data
+		return replacement.Delete(replacement.Value, replacementParent)
+	}
+}
+
+func (t *TreeReview) Insert(value, data string) error {
+	if t.Root == nil {
+		t.Root = &NodeReview{Value: value, Data: data}
+		return nil
+	}
+	return t.Root.Insert(value, data)
+}
+
+func (t *TreeReview) Find(s string) (string, bool) {
+	if t == nil {
+		return "", false
+	}
+	return t.Root.Find(s)
+}
+
+//Delete removes a node from the tree
+func (t *TreeReview) Delete(s string) error {
+	if t.Root == nil {
+		return errors.New("cannot delete a value from an empty tree")
+	}
+	fakeParent := &NodeReview{Right: t.Root}
+	err := t.Root.Delete(s, fakeParent)
+	if err != nil {
+		return err
+	}
+	//if root is the only node and it is deleted
+	if fakeParent.Right == nil {
+		t.Root = nil
+	}
+	return nil
+}
+
+func (t *TreeReview) TraversePre(n *NodeReview, f func(*NodeReview)) {
+	if n == nil {
+		return
+	}
+	f(n)
+	t.TraversePre(n.Left, f)
+	t.TraversePre(n.Right, f)
+}
+
+func (t *TreeReview) TraversePost(n *NodeReview, f func(*NodeReview)) {
+	if n == nil {
+		return
+	}
+	t.TraversePost(n.Left, f)
+	t.TraversePost(n.Right, f)
+	f(n)
+}
+
+//from left to right, small to large
+func (t *TreeReview) TraverseIn(n *NodeReview, f func(*NodeReview)) {
+	if n == nil {
+		return
+	}
+	t.TraverseIn(n.Left, f)
+	f(n)
+	t.TraverseIn(n.Right, f)
+}
+
 func main() {
 	//set up a slice of strings
 	values := []string{"d", "b", "c", "e", "a"}
 	data := []string{"demand", "bus", "cantie", "email", "apple"}
-	tree := &Tree{}
+	tree := &TreeReview{}
 
 	//insert values
 	for i := 0; i < len(values); i++ {
@@ -207,11 +379,11 @@ func main() {
 
 	//print tree
 	fmt.Print("Sorted values: | ")
-	tree.TraversePre(tree.Root, func(n *Node) { fmt.Print(n.Value, ": ", n.Data, " | ") })
+	tree.TraverseIn(tree.Root, func(n *NodeReview) { fmt.Print(n.Value, ": ", n.Data, " | ") })
 	fmt.Println()
 
 	//find value
-	s := "a"
+	s := "d"
 	fmt.Print("Finde node '", s, "': ")
 	d, found := tree.Find(s)
 	if !found {
@@ -225,18 +397,18 @@ func main() {
 		log.Fatal("Error deleting "+s+": ", err)
 	}
 	fmt.Println("After deleting '" + s + "': ")
-	tree.TraverseIn(tree.Root, func(n *Node) { fmt.Println(n.Value, ": ", n.Data, " | ") })
+	tree.TraverseIn(tree.Root, func(n *NodeReview) { fmt.Println(n.Value, ": ", n.Data, " | ") })
 	fmt.Println()
 
 	//single tree case
 	fmt.Println("Single tree: ")
-	tree = &Tree{}
+	tree = &TreeReview{}
 	tree.Insert("a", "apache")
-	tree.TraverseIn(tree.Root, func(n *Node) { fmt.Println(n.Value, ": ", n.Data, " | ") })
+	tree.TraverseIn(tree.Root, func(n *NodeReview) { fmt.Println(n.Value, ": ", n.Data, " | ") })
 	fmt.Println()
 
 	tree.Delete("a")
 	fmt.Println("After delete:")
-	tree.TraversePre(tree.Root, func(n *Node) { fmt.Print(n.Value, ": ", n.Data, " | ") })
+	tree.TraversePre(tree.Root, func(n *NodeReview) { fmt.Print(n.Value, ": ", n.Data, " | ") })
 	fmt.Println()
 }
